@@ -3,14 +3,31 @@
   no-undef, jsx-a11y/label-has-for
 */
 class TimersDashboard extends React.Component {
+    state = {
+        timers: [
+            {
+                title: 'Practice squat',
+                project: 'Gym Chores',
+                id: uuid.v4(),
+                elapsed: 5456099,
+                runningSince: Date.now(),
+            },
+            {
+                title: 'Bake squash',
+                project: 'Kitchen Chores',
+                id: uuid.v4(),
+                elapsed: 1273998,
+                runningSince: null,
+            },
+        ],
+    };
+
     render() {
         return (
             <div className='ui three column centered grid'>
                 <div className='column'>
-                    <EditableTimerList />
-                    <ToggleableTimerForm
-                        isOpen={true}
-                    />
+                    <EditableTimerList timers={this.state.timers}/>
+                    <ToggleableTimerForm/>
                 </div>
             </div>
         );
@@ -18,16 +35,22 @@ class TimersDashboard extends React.Component {
 }
 
 class ToggleableTimerForm extends React.Component {
+    state = {
+        isOpen: false
+    };
+    handleFormOpen = () =>{
+        this.setState({isOpen:true});
+    }
     render() {
-        if (this.props.isOpen) {
+        if (this.state.isOpen) {
             return (
-                <TimerForm />
+                <TimerForm/>
             );
         } else {
             return (
                 <div className='ui basic content center aligned segment'>
-                    <button className='ui basic button icon'>
-                        <i className='plus icon' />
+                    <button onClick={this.handleFormOpen} className='ui basic button icon'>
+                        <i className='plus icon'/>
                     </button>
                 </div>
             );
@@ -37,32 +60,33 @@ class ToggleableTimerForm extends React.Component {
 
 class EditableTimerList extends React.Component {
     render() {
+        const timers = this.props.timers.map((timer) => {
+            <EditableTimer
+                key={timer.id}
+                id={timer.id}
+                title={timer.title}
+                project={timer.project}
+                elapsed={timer.elapsed}
+                runningSince={this.runningSince}/>
+        });
         return (
             <div id='timers'>
-                <EditableTimer
-                    title='Learn React'
-                    project='Web Domination'
-                    elapsed='8986300'
-                    runningSince={null}
-                    editFormOpen={false}
-                />
-                <EditableTimer
-                    title='Learn extreme ironing'
-                    project='World Domination'
-                    elapsed='3890985'
-                    runningSince={null}
-                    editFormOpen={true}
-                />
+                {timers}
             </div>
         );
     }
 }
 
 class EditableTimer extends React.Component {
+    state = {
+        editFormOpen: false
+    };
+
     render() {
-        if (this.props.editFormOpen) {
+        if (this.state.editFormOpen) {
             return (
                 <TimerForm
+                    id={this.props.id}
                     title={this.props.title}
                     project={this.props.project}
                 />
@@ -70,6 +94,7 @@ class EditableTimer extends React.Component {
         } else {
             return (
                 <Timer
+                    id={this.props.id}
                     title={this.props.title}
                     project={this.props.project}
                     elapsed={this.props.elapsed}
@@ -99,10 +124,10 @@ class Timer extends React.Component {
                     </div>
                     <div className='extra content'>
             <span className='right floated edit icon'>
-              <i className='edit icon' />
+              <i className='edit icon'/>
             </span>
                         <span className='right floated trash icon'>
-              <i className='trash icon' />
+              <i className='trash icon'/>
             </span>
                     </div>
                 </div>
@@ -123,11 +148,11 @@ class TimerForm extends React.Component {
                     <div className='ui form'>
                         <div className='field'>
                             <label>Title</label>
-                            <input type='text' defaultValue={this.props.title} />
+                            <input type='text' defaultValue={this.props.title}/>
                         </div>
                         <div className='field'>
                             <label>Project</label>
-                            <input type='text' defaultValue={this.props.project} />
+                            <input type='text' defaultValue={this.props.project}/>
                         </div>
                         <div className='ui two bottom attached buttons'>
                             <button className='ui basic blue button'>
@@ -145,7 +170,7 @@ class TimerForm extends React.Component {
 }
 
 ReactDOM.render(
-    <TimersDashboard />,
+    <TimersDashboard/>,
     document.getElementById('content')
 );
 
