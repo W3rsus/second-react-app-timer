@@ -29,5 +29,7 @@ The server is now running at [localhost:3000](localhost:3000)
    4. Determine in which component each piece of state should live
 
    5. Hard-code initial states
+   
+   
 
 
